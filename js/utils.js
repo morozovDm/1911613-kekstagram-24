@@ -9,3 +9,6 @@ export function randomInteger(min, max) {
 export function checkStrMaxLength(str, maxLength) {
   return !!str && str.length <= maxLength;
 }
+
+checkStrMaxLength('str', 3);
+
