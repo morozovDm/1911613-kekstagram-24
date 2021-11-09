@@ -26,6 +26,7 @@ export function closePreviewViewer(node) {
   utils.toggleBodyModalOpen();
   visibleCommentsCount = 5;
   commentsLoader.removeEventListener('click', loadNewCommentsCallbackWrapper);
+  loadNewCommentsCallbackWrapper = null;
 }
 
 function updateParams(node, data) {
