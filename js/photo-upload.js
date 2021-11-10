@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import * as utils from './utils.js';
 import * as validators from './validators.js';
+import * as slider from './slider.js';
 
 const uploadPhoto = document.querySelector('#upload-file');
 const cacelButton = document.querySelector('#upload-cancel');
@@ -10,6 +12,9 @@ const scaleControlBiggerBtn = document.querySelector('.scale__control--bigger');
 const hashTagsInput = document.querySelector('.text__hashtags');
 const descriptionInput = document.querySelector('.text__description');
 const effectsList = document.querySelector('.effects__list');
+const effectLevelSlider = document.querySelector('.effect-level__slider');
+const effectLevelWrapper = document.querySelector('.effect-level');
+const effectLevelValue = document.querySelector('.effect-level__value');
 
 uploadPhoto.addEventListener('change', () => openImageEditor());
 cacelButton.addEventListener('click', () => closeImageEditor());
@@ -23,7 +28,12 @@ document.addEventListener('keydown', (event) => {
 
 effectsList.addEventListener('click', (event) => {
   imgPreview.className = '';
-  if (event.target.classList.contains('effect-chrome')) {
+  effectLevelSlider.classList.remove('hidden');
+  effectLevelWrapper.classList.remove('hidden');
+  if (event.target.classList.contains('effect-none')) {
+    effectLevelSlider.classList.add('hidden');
+    effectLevelWrapper.classList.add('hidden');
+  }else if (event.target.classList.contains('effect-chrome')) {
     imgPreview.classList.add('effects__preview--chrome');
   } else if(event.target.classList.contains('effect-sepia')) {
     imgPreview.classList.add('effects__preview--sepia');
@@ -46,6 +56,10 @@ descriptionInput.addEventListener('blur', () => descriptionInput.classList.remov
 function openImageEditor() {
   const uploadPhotoSection = document.getElementsByClassName('img-upload__overlay')[0];
   uploadPhotoSection.classList.remove('hidden');
+  effectLevelSlider.classList.add('hidden');
+  effectLevelWrapper.classList.add('hidden');
+  imgPreview.style.filter = '';
+  effectLevelValue.value = '';
   utils.toggleBodyModalOpen();
 }
 
