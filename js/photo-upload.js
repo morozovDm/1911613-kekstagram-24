@@ -2,6 +2,7 @@
 import * as utils from './utils.js';
 import * as validators from './validators.js';
 import * as slider from './slider.js';
+import * as store from './store.js';
 
 const uploadPhoto = document.querySelector('#upload-file');
 const cacelButton = document.querySelector('#upload-cancel');
@@ -27,23 +28,28 @@ document.addEventListener('keydown', (event) => {
 });
 
 effectsList.addEventListener('click', (event) => {
-  imgPreview.className = '';
-  effectLevelSlider.classList.remove('hidden');
-  effectLevelWrapper.classList.remove('hidden');
-  if (event.target.classList.contains('effect-none')) {
-    effectLevelSlider.classList.add('hidden');
-    effectLevelWrapper.classList.add('hidden');
-  }else if (event.target.classList.contains('effect-chrome')) {
-    imgPreview.classList.add('effects__preview--chrome');
-  } else if(event.target.classList.contains('effect-sepia')) {
-    imgPreview.classList.add('effects__preview--sepia');
-  } else if (event.target.classList.contains('effect-marvin')) {
-    imgPreview.classList.add('effects__preview--marvin');
-  } else if (event.target.classList.contains('effect-phobos')) {
-    imgPreview.classList.add('effects__preview--phobos');
-  } else if (event.target.classList.contains('effect-heat')) {
-    imgPreview.classList.add('effects__preview--heat');
+  const selectedEffect = event.target.value;
+  if(selectedEffect) {
+    imgPreview.className = '';
+    effectLevelSlider.classList.remove('hidden');
+    effectLevelWrapper.classList.remove('hidden');
+    switch(selectedEffect) {
+      case 'none': {
+        effectLevelSlider.classList.add('hidden');
+        effectLevelWrapper.classList.add('hidden');
+        break;
+      }
+      case 'chrome':
+      case 'sepia':
+      case 'marvin':
+      case 'phobos':
+      case 'heat': {
+        imgPreview.classList.add(`effects__preview--${selectedEffect}`);
+        break;
+      }
+    }
   }
+  store.setSelectedEffect(event.target.value);
 });
 
 hashTagsInput.addEventListener('input', () => hashTagsInput.setCustomValidity(validators.hashTagsValidators(hashTagsInput.value)));
@@ -77,10 +83,12 @@ function decreasingScale() {
   const value = +scaleControl.value > 25 ? +scaleControl.value - 25 : 25;
   scaleControl.setAttribute('value', value);
   imgPreview.style.transform = `scale(${value/100})`;
+  store.setScale(value);
 }
 
 function increasingScale() {
   const value = +scaleControl.value + 25 < 100 ? +scaleControl.value + 25 : 100;
   scaleControl.setAttribute('value', value);
   imgPreview.style.transform = `scale(${value/100})`;
+  store.setScale(value);
 }
