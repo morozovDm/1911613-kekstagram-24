@@ -1,9 +1,11 @@
+import * as utils from './utils.js';
+
 export function openPreviewViewer(data) {
   const previewViewerNode = document.querySelector('.big-picture');
   const closeButton = previewViewerNode.querySelector('.big-picture__cancel');
   updateParams(previewViewerNode, data);
   previewViewerNode.classList.remove('hidden');
-  document.querySelector('body').classList.add('.modal-open');
+  utils.toggleBodyModalOpen();
   closeButton.addEventListener('click', () => {
     closePreviewViewer(previewViewerNode);
     closeButton.removeEventListener('click', () => {});
@@ -18,7 +20,7 @@ export function openPreviewViewer(data) {
 
 export function closePreviewViewer(node) {
   node.classList.add('hidden');
-  document.querySelector('body').classList.remove('.modal-open');
+  utils.toggleBodyModalOpen();
 }
 
 function updateParams(node, data) {
