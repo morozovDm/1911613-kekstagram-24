@@ -2,8 +2,10 @@
 import * as utils from './utils.js';
 import * as validators from './validators.js';
 import * as slider from './slider.js';
-import * as store from './store.js';
+import * as api from './api.js';
+import * as alertMessagebox from './alert-messagebox.js';
 
+const selectImageForm = document.querySelector('#upload-select-image');
 const uploadPhoto = document.querySelector('#upload-file');
 const cacelButton = document.querySelector('#upload-cancel');
 const imgPreview = document.querySelector('.img-upload__preview');
@@ -25,6 +27,20 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Escape' && !hashTagsInput.classList.contains('focused') && !descriptionInput.classList.contains('focused')) {
     closeImageEditor();
   }
+});
+
+selectImageForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  api.uploadData(
+    () => {
+      alertMessagebox.renderSuccessMessage();
+      closeImageEditor();
+    },
+    (error) => {
+      alertMessagebox.renderErrorMessage(resetForm, document.querySelector('#error'));
+    },
+    new FormData(selectImageForm),
+  );
 });
 
 effectsList.addEventListener('click', (event) => {
@@ -49,7 +65,6 @@ effectsList.addEventListener('click', (event) => {
       }
     }
   }
-  store.setSelectedEffect(event.target.value);
 });
 
 hashTagsInput.addEventListener('input', () => hashTagsInput.setCustomValidity(validators.hashTagsValidators(hashTagsInput.value)));
@@ -62,20 +77,14 @@ descriptionInput.addEventListener('blur', () => descriptionInput.classList.remov
 function openImageEditor() {
   const uploadPhotoSection = document.getElementsByClassName('img-upload__overlay')[0];
   uploadPhotoSection.classList.remove('hidden');
-  effectLevelSlider.classList.add('hidden');
-  effectLevelWrapper.classList.add('hidden');
-  imgPreview.style.filter = '';
-  effectLevelValue.value = '';
+  resetForm();
   utils.toggleBodyModalOpen();
 }
 
 function closeImageEditor() {
   const uploadPhotoSection = document.getElementsByClassName('img-upload__overlay')[0];
   uploadPhotoSection.classList.add('hidden');
-  scaleControl.setAttribute('value', 100);
   uploadPhoto.value = '';
-  imgPreview.style.transform = 'scale(1.0)';
-  imgPreview.className = '';
   utils.toggleBodyModalOpen();
 }
 
@@ -83,12 +92,23 @@ function decreasingScale() {
   const value = +scaleControl.value > 25 ? +scaleControl.value - 25 : 25;
   scaleControl.setAttribute('value', value);
   imgPreview.style.transform = `scale(${value/100})`;
-  store.setScale(value);
 }
 
 function increasingScale() {
   const value = +scaleControl.value + 25 < 100 ? +scaleControl.value + 25 : 100;
   scaleControl.setAttribute('value', value);
   imgPreview.style.transform = `scale(${value/100})`;
-  store.setScale(value);
+}
+
+function resetForm() {
+  effectLevelSlider.classList.add('hidden');
+  effectLevelWrapper.classList.add('hidden');
+  scaleControl.setAttribute('value', 100);
+  imgPreview.style.filter = '';
+  effectLevelValue.value = '';
+  imgPreview.style.transform = 'scale(1.0)';
+  imgPreview.className = '';
+  hashTagsInput.value = '';
+  descriptionInput.value = '';
+  document.querySelector('#effect-none').checked = true;
 }
