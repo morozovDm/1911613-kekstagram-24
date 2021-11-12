@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as utils from './utils.js';
 import * as validators from './validators.js';
 import * as slider from './slider.js';
@@ -35,7 +36,7 @@ selectImageForm.addEventListener('submit', (event) => {
       alertMessagebox.renderSuccessMessage();
       closeImageEditor();
     },
-    () => {
+    (error) => {
       alertMessagebox.renderErrorMessage(resetForm, document.querySelector('#error'));
     },
     new FormData(selectImageForm),
@@ -81,7 +82,6 @@ function openImageEditor(event) {
   uploadPhotoSection.classList.remove('hidden');
   resetForm();
   utils.toggleBodyModalOpen();
-  slider.showSlider();
 }
 
 function closeImageEditor() {
@@ -103,7 +103,7 @@ function increasingScale() {
   imgPreviewWrapper.style.transform = `scale(${value/100})`;
 }
 
-export function resetForm() {
+function resetForm() {
   effectLevelSlider.classList.add('hidden');
   effectLevelWrapper.classList.add('hidden');
   scaleControl.setAttribute('value', 100);
