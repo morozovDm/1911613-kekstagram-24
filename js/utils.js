@@ -21,5 +21,13 @@ export function checkStrMaxLength(str, maxLength) {
   return !!str && str.length <= maxLength;
 }
 
+export function debounce(callback, delay = 500) {
+  let timeout;
+  return () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(callback, delay);
+  };
+}
+
 checkStrMaxLength('str', 3);
 
