@@ -11,36 +11,6 @@ const effectOptions = {
 };
 let selectedEffect = 'none';
 
-noUiSlider.create(slider, {
-  range: {
-    min: 0,
-    max: 1,
-  },
-  start: 1,
-  step: 0.1,
-  connect: 'lower',
-});
-
-slider.noUiSlider.on('update', ([value]) => {
-  effectLevelValue.value = +value;
-  switch(selectedEffect) {
-    case 'chrome':
-    case 'sepia':
-    case 'heat': {
-      imgPreview.style.filter = `${effectOptions[selectedEffect].style}(${+value})`;
-      break;
-    }
-    case 'marvin': {
-      imgPreview.style.filter = `${effectOptions[selectedEffect].style}(${+value}%)`;
-      break;
-    }
-    case 'phobos': {
-      imgPreview.style.filter = `${effectOptions[selectedEffect].style}(${+value}px)`;
-      break;
-    }
-  }
-});
-
 effectsList.addEventListener('click', (event) => {
   imgPreview.style.filter = '';
   effectLevelValue.value = '';
@@ -58,5 +28,37 @@ function setSliderParams(selected) {
     },
     step: effectOptions[selected].step,
     start: effectOptions[selected].max,
+  });
+}
+
+export function showSlider() {
+  noUiSlider.create(slider, {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    connect: 'lower',
+  });
+
+  slider.noUiSlider.on('update', ([value]) => {
+    effectLevelValue.value = +value;
+    switch(selectedEffect) {
+      case 'chrome':
+      case 'sepia':
+      case 'heat': {
+        imgPreview.style.filter = `${effectOptions[selectedEffect].style}(${+value})`;
+        break;
+      }
+      case 'marvin': {
+        imgPreview.style.filter = `${effectOptions[selectedEffect].style}(${+value}%)`;
+        break;
+      }
+      case 'phobos': {
+        imgPreview.style.filter = `${effectOptions[selectedEffect].style}(${+value}px)`;
+        break;
+      }
+    }
   });
 }
