@@ -8,7 +8,7 @@ import * as alertMessagebox from './alert-messagebox.js';
 const selectImageForm = document.querySelector('#upload-select-image');
 const uploadPhoto = document.querySelector('#upload-file');
 const cacelButton = document.querySelector('#upload-cancel');
-const imgPreview = document.querySelector('.img-upload__preview');
+const imgPreviewWrapper = document.querySelector('.img-upload__preview');
 const scaleControl = document.querySelector('.scale__control--value');
 const scaleControlSmallerBtn = document.querySelector('.scale__control--smaller');
 const scaleControlBiggerBtn = document.querySelector('.scale__control--bigger');
@@ -19,7 +19,7 @@ const effectLevelSlider = document.querySelector('.effect-level__slider');
 const effectLevelWrapper = document.querySelector('.effect-level');
 const effectLevelValue = document.querySelector('.effect-level__value');
 
-uploadPhoto.addEventListener('change', () => openImageEditor());
+uploadPhoto.addEventListener('change', (event) => openImageEditor(event));
 cacelButton.addEventListener('click', () => closeImageEditor());
 scaleControlSmallerBtn.addEventListener('click', () => decreasingScale());
 scaleControlBiggerBtn.addEventListener('click', () => increasingScale());
@@ -46,7 +46,7 @@ selectImageForm.addEventListener('submit', (event) => {
 effectsList.addEventListener('click', (event) => {
   const selectedEffect = event.target.value;
   if(selectedEffect) {
-    imgPreview.className = '';
+    imgPreviewWrapper.className = 'img-upload__preview';
     effectLevelSlider.classList.remove('hidden');
     effectLevelWrapper.classList.remove('hidden');
     switch(selectedEffect) {
@@ -60,7 +60,7 @@ effectsList.addEventListener('click', (event) => {
       case 'marvin':
       case 'phobos':
       case 'heat': {
-        imgPreview.classList.add(`effects__preview--${selectedEffect}`);
+        imgPreviewWrapper.classList.add(`effects__preview--${selectedEffect}`);
         break;
       }
     }
@@ -74,7 +74,10 @@ descriptionInput.addEventListener('input', () => descriptionInput.setCustomValid
 descriptionInput.addEventListener('focus', () => descriptionInput.classList.add('focused'));
 descriptionInput.addEventListener('blur', () => descriptionInput.classList.remove('focused'));
 
-function openImageEditor() {
+function openImageEditor(event) {
+  const imgPreview = imgPreviewWrapper.querySelector('img');
+  const file = event.target.files;
+  imgPreview.src = window.URL.createObjectURL(new Blob(file));
   const uploadPhotoSection = document.getElementsByClassName('img-upload__overlay')[0];
   uploadPhotoSection.classList.remove('hidden');
   resetForm();
@@ -91,23 +94,23 @@ function closeImageEditor() {
 function decreasingScale() {
   const value = +scaleControl.value > 25 ? +scaleControl.value - 25 : 25;
   scaleControl.setAttribute('value', value);
-  imgPreview.style.transform = `scale(${value/100})`;
+  imgPreviewWrapper.style.transform = `scale(${value/100})`;
 }
 
 function increasingScale() {
   const value = +scaleControl.value + 25 < 100 ? +scaleControl.value + 25 : 100;
   scaleControl.setAttribute('value', value);
-  imgPreview.style.transform = `scale(${value/100})`;
+  imgPreviewWrapper.style.transform = `scale(${value/100})`;
 }
 
 function resetForm() {
   effectLevelSlider.classList.add('hidden');
   effectLevelWrapper.classList.add('hidden');
   scaleControl.setAttribute('value', 100);
-  imgPreview.style.filter = '';
+  imgPreviewWrapper.style.filter = '';
   effectLevelValue.value = '';
-  imgPreview.style.transform = 'scale(1.0)';
-  imgPreview.className = '';
+  imgPreviewWrapper.style.transform = 'scale(1.0)';
+  imgPreviewWrapper.className = 'img-upload__preview';
   hashTagsInput.value = '';
   descriptionInput.value = '';
   document.querySelector('#effect-none').checked = true;
