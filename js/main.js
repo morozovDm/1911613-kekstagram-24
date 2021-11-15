@@ -5,6 +5,8 @@ import * as photoUpload from './photo-upload.js';
 import * as alertMessagebox from './alert-messagebox.js';
 import * as filters from './filters.js';
 
+photoUpload.resetForm();
+
 api.getData(
   (data) => {
     photoCard.generateCards(data);
